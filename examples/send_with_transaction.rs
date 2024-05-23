@@ -4,7 +4,7 @@
 
 use arduino_hal::default_serial;
 use embedded_nano_mesh::{
-    AddressType, LifeTimeType, Node, NodeConfig, NodeString, SpecialSendError,
+    ExactAddressType, LifeTimeType, Node, NodeConfig, NodeString, SpecialSendError,
 };
 use panic_halt as _;
 
@@ -20,15 +20,14 @@ fn main() -> ! {
     init_serial(default_serial!(dp, pins, 9600));
 
     let mut mesh_node = Node::new(NodeConfig {
-        device_address: 1 as AddressType,
+        device_address: ExactAddressType::new(1).unwrap(),
         listen_period: 150 as ms,
     });
 
     match mesh_node.send_with_transaction::<Atmega328pTime, ArduinoNanoSerial>(
         NodeString::from("This is the message to be sent").into_bytes(),
-        2 as AddressType,
+        ExactAddressType::new(2).unwrap(),
         10 as LifeTimeType,
-        true,
         3000 as ms,
     ) {
         Ok(()) => {
@@ -36,13 +35,6 @@ fn main() -> ! {
         }
         Err(SpecialSendError::SendingQueueIsFull) => {
             ufmt::uwriteln!(&mut ArduinoNanoSerial::default(), "SendingQueueIsFull").unwrap();
-        }
-        Err(SpecialSendError::MulticastAddressForbidden) => {
-            ufmt::uwriteln!(
-                &mut ArduinoNanoSerial::default(),
-                "MulticastAddressForbidden"
-            )
-            .unwrap();
         }
         Err(SpecialSendError::Timeout) => {
             ufmt::uwriteln!(&mut ArduinoNanoSerial::default(), "Timeout").unwrap();

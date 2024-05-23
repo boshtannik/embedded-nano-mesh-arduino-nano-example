@@ -3,7 +3,7 @@
 #![feature(abi_avr_interrupt)]
 
 use arduino_hal::default_serial;
-use embedded_nano_mesh::{AddressType, Node, NodeConfig};
+use embedded_nano_mesh::{ExactAddressType, Node, NodeConfig};
 use panic_halt as _;
 
 use platform_millis_arduino_nano::{init_timer, ms, Atmega328pTime};
@@ -18,7 +18,7 @@ fn main() -> ! {
     init_serial(default_serial!(dp, pins, 9600));
 
     let mut mesh_node = Node::new(NodeConfig {
-        device_address: 1 as AddressType,
+        device_address: ExactAddressType::new(2).unwrap(),
         listen_period: 150 as ms,
     });
 
