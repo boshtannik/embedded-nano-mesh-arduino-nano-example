@@ -8,7 +8,7 @@ use embedded_nano_mesh::{
 };
 use panic_halt as _;
 
-use platform_millis_arduino_nano::{init_timer, ms, Atmega328pTime};
+use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis};
 use platform_serial_arduino_nano::{init_serial, ArduinoNanoSerial};
 
 #[arduino_hal::entry]
@@ -24,7 +24,7 @@ fn main() -> ! {
         listen_period: 150 as ms,
     });
 
-    match mesh_node.send_ping_pong::<Atmega328pTime, ArduinoNanoSerial>(
+    match mesh_node.send_ping_pong::<Atmega328pMillis, ArduinoNanoSerial>(
         NodeString::from("This is the message to be sent").into_bytes(),
         ExactAddressType::new(1).unwrap(),
         10 as LifeTimeType,
@@ -42,6 +42,6 @@ fn main() -> ! {
     }
 
     loop {
-        let _ = mesh_node.update::<Atmega328pTime, ArduinoNanoSerial>();
+        let _ = mesh_node.update::<Atmega328pMillis, ArduinoNanoSerial>();
     }
 }

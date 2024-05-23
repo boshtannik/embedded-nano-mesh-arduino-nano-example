@@ -7,7 +7,7 @@ use panic_halt as _;
 
 use embedded_nano_mesh::{ExactAddressType, Node, NodeConfig};
 
-use platform_millis_arduino_nano::{init_timer, ms, Atmega328pTime};
+use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis};
 use platform_serial_arduino_nano::{init_serial, ArduinoNanoSerial};
 
 #[arduino_hal::entry]
@@ -25,6 +25,6 @@ fn main() -> ! {
     });
 
     loop {
-        let _ = mesh_node.update::<Atmega328pTime, ArduinoNanoSerial>();
+        let _ = mesh_node.update::<Atmega328pMillis, ArduinoNanoSerial>();
     }
 }
