@@ -24,14 +24,12 @@ fn main() -> ! {
         listen_period: 150 as ms,
     });
 
-    match mesh_node.send_to_exact(
-        NodeString::from("This is the message to be sent").into_bytes(),
-        ExactAddressType::new(2).unwrap(),
+    match mesh_node.broadcast(
+        NodeString::from("This is the message to be broadcasted").into_bytes(),
         10 as LifeTimeType,
-        true,
     ) {
         Ok(()) => {
-            ufmt::uwriteln!(&mut ArduinoNanoSerial::default(), "Packet sent").unwrap();
+            ufmt::uwriteln!(&mut ArduinoNanoSerial::default(), "Packet broadcasted").unwrap();
         }
         Err(SendError::SendingQueueIsFull) => {
             ufmt::uwriteln!(&mut ArduinoNanoSerial::default(), "SendingQueueIsFull").unwrap();
