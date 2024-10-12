@@ -2,6 +2,9 @@
 
 Rust project for the _Arduino Nano_.
 
+## Important!
+ - During flash use --release flag to let binary to fit onto arduino nano memory.
+
 ## Build Instructions
 1. Install prerequisites as described in the [`avr-hal` README] (`avr-gcc`, `avr-libc`, `avrdude`, [`ravedude`]).
 
