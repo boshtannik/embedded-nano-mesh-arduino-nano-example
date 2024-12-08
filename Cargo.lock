@@ -121,9 +121,9 @@ dependencies = [
 
 [[package]]
 name = "embedded-nano-mesh"
-version = "1.1.2"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae4007d241fc0b8f3687c4e6aeca49de62e4aa2648b842320e53b1974c63761f"
+checksum = "01849f31942e4f7c74208d6daf99f104582aa5fffbe7b5c022a9e9e13d028b65"
 dependencies = [
  "heapless",
  "nb 0.1.3",
