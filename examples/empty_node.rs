@@ -1,14 +1,45 @@
 #![no_std]
 #![no_main]
 #![feature(abi_avr_interrupt)]
+#![feature(never_type)]
 
-use arduino_hal::default_serial;
+use arduino_hal::{
+    hal::port,
+    pac::USART0,
+    port::{mode, Pin},
+    Usart,
+};
+use embedded_nano_mesh::{ExactAddressType, Node, NodeConfig};
 use panic_halt as _;
 
-use embedded_nano_mesh::{ExactAddressType, Node, NodeConfig};
+use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis, PlatformMillis};
 
-use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis};
-use platform_serial_arduino_nano::{init_serial, ArduinoNanoSerial};
+use arduino_hal;
+
+struct ArduinoNanoIO {
+    usart: Usart<USART0, Pin<mode::Input, port::PD0>, Pin<mode::Output, port::PD1>>,
+}
+
+use embedded_serial::{MutBlockingTx, MutNonBlockingRx};
+
+impl MutNonBlockingRx for ArduinoNanoIO {
+    type Error = !;
+    fn getc_try(&mut self) -> Result<Option<u8>, Self::Error> {
+        match embedded_hal::serial::Read::read(&mut self.usart) {
+            Ok(res) => Ok(Some(res)),
+            Err(_) => Ok(None),
+        }
+    }
+}
+
+impl MutBlockingTx for ArduinoNanoIO {
+    /// This shall be the blocking one
+    type Error = !;
+    fn putc(&mut self, ch: u8) -> Result<(), Self::Error> {
+        let _ = self.usart.write_byte(ch);
+        Ok(())
+    }
+}
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -16,15 +47,18 @@ fn main() -> ! {
     let pins = arduino_hal::pins!(dp);
 
     init_timer(dp.TC0);
-    init_serial(default_serial!(dp, pins, 9600));
+    let usart =
+        arduino_hal::usart::Usart::new(dp.USART0, pins.d0, pins.d1.into_output(), 9600.into());
 
-    // This node might be used to extend mesh network range.
+    let mut interface_driver = ArduinoNanoIO { usart };
+
     let mut mesh_node = Node::new(NodeConfig {
-        device_address: ExactAddressType::new(1).unwrap(),
-        listen_period: 100 as ms,
+        device_address: ExactAddressType::new(2).unwrap(),
+        listen_period: 150 as ms,
     });
 
     loop {
-        let _ = mesh_node.update::<Atmega328pMillis, ArduinoNanoSerial>();
+        let current_time = Atmega328pMillis::millis();
+        let _ = mesh_node.update(&mut interface_driver, current_time);
     }
 }
