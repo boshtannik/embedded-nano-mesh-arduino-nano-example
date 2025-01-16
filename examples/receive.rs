@@ -3,43 +3,15 @@
 #![feature(abi_avr_interrupt)]
 #![feature(never_type)]
 
-use arduino_hal::{
-    hal::port,
-    pac::USART0,
-    port::{mode, Pin},
-    Usart,
-};
+mod serial_driver;
 use embedded_nano_mesh::{ExactAddressType, Node, NodeConfig, NodeString};
+
 use panic_halt as _;
+use serial_driver::*;
 
 use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis, PlatformMillis};
 
 use arduino_hal;
-
-struct ArduinoNanoIO {
-    usart: Usart<USART0, Pin<mode::Input, port::PD0>, Pin<mode::Output, port::PD1>>,
-}
-
-use embedded_serial::{MutBlockingTx, MutNonBlockingRx};
-
-impl MutNonBlockingRx for ArduinoNanoIO {
-    type Error = !;
-    fn getc_try(&mut self) -> Result<Option<u8>, Self::Error> {
-        match embedded_hal::serial::Read::read(&mut self.usart) {
-            Ok(res) => Ok(Some(res)),
-            Err(_) => Ok(None),
-        }
-    }
-}
-
-impl MutBlockingTx for ArduinoNanoIO {
-    /// This shall be the blocking one
-    type Error = !;
-    fn putc(&mut self, ch: u8) -> Result<(), Self::Error> {
-        let _ = self.usart.write_byte(ch);
-        Ok(())
-    }
-}
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -71,7 +43,6 @@ fn main() -> ! {
             let _ = interface_driver.puts("\n");
         }
 
-        let current_time = Atmega328pMillis::millis();
-        let _ = mesh_node.update(&mut interface_driver, current_time);
+        let _ = mesh_node.update(&mut interface_driver, Atmega328pMillis::millis());
     }
 }
