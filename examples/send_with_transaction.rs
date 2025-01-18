@@ -14,6 +14,7 @@ use arduino_hal;
 
 mod serial_driver;
 use serial_driver::*;
+use ufmt::uwriteln;
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -39,13 +40,11 @@ fn main() -> ! {
         || Atmega328pMillis::millis(),
         &mut interface_driver,
     ) {
-        Ok(()) => interface_driver
-            .puts("Packet sent, transaction done.")
-            .unwrap(),
+        Ok(()) => uwriteln!(interface_driver, "Packet sent, transaction done.").unwrap(),
         Err(SpecialSendError::SendingQueueIsFull) => {
-            interface_driver.puts("SendingQueueIsFull").unwrap()
+            uwriteln!(interface_driver, "SendingQueueIsFull").unwrap()
         }
-        Err(SpecialSendError::Timeout) => interface_driver.puts("Timeout").unwrap(),
+        Err(SpecialSendError::Timeout) => uwriteln!(interface_driver, "Timeout").unwrap(),
     };
     loop {
         let _ = mesh_node.update(&mut interface_driver, Atmega328pMillis::millis());

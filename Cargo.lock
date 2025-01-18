@@ -11,8 +11,8 @@ dependencies = [
  "avr-device",
  "avr-hal-generic",
  "cfg-if 1.0.0",
- "embedded-hal",
- "ufmt",
+ "embedded-hal 0.2.7",
+ "ufmt 0.1.2",
  "void",
 ]
 
@@ -55,12 +55,12 @@ source = "git+https://github.com/rahix/avr-hal?rev=190f2c3cb8d29e10f71119352b912
 dependencies = [
  "avr-device",
  "cfg-if 0.1.10",
- "embedded-hal",
+ "embedded-hal 0.2.7",
  "embedded-storage",
  "nb 0.1.3",
  "paste",
  "rustversion",
- "ufmt",
+ "ufmt 0.1.2",
  "void",
 ]
 
@@ -99,12 +99,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "embedded-hal"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "361a90feb7004eca4019fb28352a9465666b24f840f5c3cddf0ff13920590b89"
+
+[[package]]
+name = "embedded-hal-nb"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fba4268c14288c828995299e59b12babdbe170f6c6d73731af1b4648142e8605"
+dependencies = [
+ "embedded-hal 1.0.0",
+ "nb 1.1.0",
+]
+
+[[package]]
 name = "embedded-nano-mesh"
 version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92db0e17c02ee79c671ffdfb05f7bcbd4ee4afca54cba176f6ffee0ddf9a5471"
 dependencies = [
- "embedded-serial",
+ "embedded-hal-nb",
  "heapless",
 ]
 
@@ -113,19 +127,14 @@ name = "embedded-nano-mesh-arduino-nano-example"
 version = "2.0.0"
 dependencies = [
  "arduino-hal",
- "embedded-hal",
+ "embedded-hal 0.2.7",
+ "embedded-hal-nb",
  "embedded-nano-mesh",
- "embedded-serial",
  "panic-halt",
  "platform-millis-arduino-nano",
+ "ufmt 0.2.0",
  "void",
 ]
-
-[[package]]
-name = "embedded-serial"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23cba09b46dc33141b384b676b9b95ae03cc32d52afe173f9f67b701500d510e"
 
 [[package]]
 name = "embedded-storage"
@@ -281,7 +290,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "31d3c0c63312dfc9d8e5c71114d617018a19f6058674003c0da29ee8d8036cdd"
 dependencies = [
  "proc-macro-hack",
- "ufmt-macros",
+ "ufmt-macros 0.2.0",
+ "ufmt-write",
+]
+
+[[package]]
+name = "ufmt"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1a64846ec02b57e9108d6469d98d1648782ad6bb150a95a9baac26900bbeab9d"
+dependencies = [
+ "ufmt-macros 0.3.0",
  "ufmt-write",
 ]
 
@@ -292,6 +311,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4ab6c92f30c996394a8bd525aef9f03ce01d0d7ac82d81902968057e37dd7d9"
 dependencies = [
  "proc-macro-hack",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "ufmt-macros"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d337d3be617449165cb4633c8dece429afd83f84051024079f97ad32a9663716"
+dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",

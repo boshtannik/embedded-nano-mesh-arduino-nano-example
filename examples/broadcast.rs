@@ -10,6 +10,7 @@ use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis, PlatformMil
 
 use arduino_hal;
 use serial_driver::*;
+use ufmt::uwriteln;
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -20,7 +21,7 @@ fn main() -> ! {
     let usart =
         arduino_hal::usart::Usart::new(dp.USART0, pins.d0, pins.d1.into_output(), 9600.into());
 
-    let mut interface_driver = serial_driver::ArduinoNanoIO { usart };
+    let mut interface_driver = ArduinoNanoIO { usart };
 
     let mut mesh_node = Node::new(NodeConfig {
         device_address: ExactAddressType::new(2).unwrap(),
@@ -31,9 +32,9 @@ fn main() -> ! {
         NodeString::from_iter("This is the message to be broadcasted".chars()).into_bytes(),
         10 as LifeTimeType,
     ) {
-        Ok(_) => interface_driver.puts("Packet broadcasted\n").unwrap(),
+        Ok(_) => uwriteln!(interface_driver, "Packet broadcasted").unwrap(),
         Err(SendError::SendingQueueIsFull) => {
-            interface_driver.puts("SendingQueueIsFull\n").unwrap()
+            uwriteln!(interface_driver, "SendingQueueIsFull").unwrap()
         }
     };
     loop {

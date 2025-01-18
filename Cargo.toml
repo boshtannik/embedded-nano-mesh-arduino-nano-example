@@ -13,9 +13,10 @@ bench = false
 [dependencies]
 panic-halt = "0.2.0"
 embedded-hal = "0.2.7"
-embedded-serial = "0.5.0"
+embedded-hal-nb = "1.0.0"
+ufmt = "0.2.0"
 
-embedded-nano-mesh = "2.0.0"
+embedded-nano-mesh = { path = "../embedded-nano-mesh" }
 void = { version = "1.0.2", default-features = false }
 
 platform-millis-arduino-nano = { git = "https://github.com/boshtannik/platform-millis-arduino-nano.git", rev = "4a1d42a24c77ba222291c21016efaa9b236beda4" }

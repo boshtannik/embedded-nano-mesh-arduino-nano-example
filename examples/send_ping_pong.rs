@@ -14,6 +14,7 @@ use panic_halt as _;
 use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis, PlatformMillis};
 
 use arduino_hal;
+use ufmt::uwriteln;
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -39,11 +40,11 @@ fn main() -> ! {
         || Atmega328pMillis::millis(),
         &mut interface_driver,
     ) {
-        Ok(()) => interface_driver.puts("Packet sent, pong caught.").unwrap(),
+        Ok(()) => uwriteln!(interface_driver, "Packet sent, pong not caught.").unwrap(),
         Err(SpecialSendError::SendingQueueIsFull) => {
-            interface_driver.puts("SendingQueueIsFull").unwrap()
+            uwriteln!(interface_driver, "Packet sent, pong not caught.").unwrap()
         }
-        Err(SpecialSendError::Timeout) => interface_driver.puts("Timeout").unwrap(),
+        Err(SpecialSendError::Timeout) => uwriteln!(interface_driver, "Timeout").unwrap(),
     };
     loop {
         let _ = mesh_node.update(&mut interface_driver, Atmega328pMillis::millis());

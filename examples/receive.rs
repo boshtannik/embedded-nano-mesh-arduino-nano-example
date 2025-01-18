@@ -12,6 +12,7 @@ use serial_driver::*;
 use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis, PlatformMillis};
 
 use arduino_hal;
+use ufmt::{uwrite, uwriteln};
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -31,16 +32,18 @@ fn main() -> ! {
 
     loop {
         if let Some(packet) = mesh_node.receive() {
-            let mut msg = NodeString::from_iter("Sender: ".chars());
-            let _ = msg.push_str(
-                &NodeString::try_from(packet.source_device_identifier)
-                    .unwrap_or(NodeString::from_iter("?".chars())),
-            );
-            let _ = msg.push(' ');
-
-            let _ = interface_driver.puts(&msg);
-            let _ = interface_driver.puts(&packet.data);
-            let _ = interface_driver.puts("\n");
+            uwrite!(
+                &mut interface_driver,
+                "Sender: {}",
+                packet.source_device_identifier
+            )
+            .unwrap();
+            uwriteln!(
+                &mut interface_driver,
+                "data: {}",
+                NodeString::from(packet.data.iter().map(|b| *b as char).collect()).as_str()
+            )
+            .unwrap();
         }
 
         let _ = mesh_node.update(&mut interface_driver, Atmega328pMillis::millis());
