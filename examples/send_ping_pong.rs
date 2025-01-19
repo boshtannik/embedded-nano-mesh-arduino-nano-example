@@ -3,12 +3,10 @@
 #![feature(abi_avr_interrupt)]
 #![feature(never_type)]
 
-mod serial_driver;
-use serial_driver::*;
-
 use embedded_nano_mesh::{
     ExactAddressType, LifeTimeType, Node, NodeConfig, NodeString, SpecialSendError,
 };
+use embedded_nano_mesh_arduino_nano_io::*;
 use panic_halt as _;
 
 use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis, PlatformMillis};
@@ -25,7 +23,7 @@ fn main() -> ! {
     let usart =
         arduino_hal::usart::Usart::new(dp.USART0, pins.d0, pins.d1.into_output(), 9600.into());
 
-    let mut interface_driver = ArduinoNanoIO { usart };
+    let mut interface_driver = ArduinoNanoIO::new(usart);
 
     let mut mesh_node = Node::new(NodeConfig {
         device_address: ExactAddressType::new(1).unwrap(),
@@ -40,9 +38,9 @@ fn main() -> ! {
         || Atmega328pMillis::millis(),
         &mut interface_driver,
     ) {
-        Ok(()) => uwriteln!(interface_driver, "Packet sent, pong not caught.").unwrap(),
+        Ok(()) => uwriteln!(interface_driver, "Packet sent, pong caught.").unwrap(),
         Err(SpecialSendError::SendingQueueIsFull) => {
-            uwriteln!(interface_driver, "Packet sent, pong not caught.").unwrap()
+            uwriteln!(interface_driver, "SendingQueueIsFull").unwrap()
         }
         Err(SpecialSendError::Timeout) => uwriteln!(interface_driver, "Timeout").unwrap(),
     };

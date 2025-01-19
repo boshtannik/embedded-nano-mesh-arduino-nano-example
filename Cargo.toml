@@ -1,6 +1,6 @@
 [package]
 name = "embedded-nano-mesh-arduino-nano-example"
-version = "2.0.0"
+version = "2.1.0"
 authors = ["Yevhen Shevchenko (boshtannik) <boshtannik@gmail.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -12,11 +12,10 @@ bench = false
 
 [dependencies]
 panic-halt = "0.2.0"
-embedded-hal = "0.2.7"
-embedded-hal-nb = "1.0.0"
 ufmt = "0.2.0"
 
-embedded-nano-mesh = { path = "../embedded-nano-mesh" }
+embedded-nano-mesh = "2.1.0"
+embedded-nano-mesh-arduino-nano-io = { git = "https://github.com/boshtannik/embedded-nano-mesh-arduino-nano-io.git", rev = "028d35291d688bb3b8b166a96a71402e2434f6de" }
 void = { version = "1.0.2", default-features = false }
 
 platform-millis-arduino-nano = { git = "https://github.com/boshtannik/platform-millis-arduino-nano.git", rev = "4a1d42a24c77ba222291c21016efaa9b236beda4" }

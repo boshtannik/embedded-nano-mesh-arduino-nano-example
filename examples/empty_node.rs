@@ -4,10 +4,8 @@
 #![feature(never_type)]
 
 use embedded_nano_mesh::{ExactAddressType, Node, NodeConfig};
+use embedded_nano_mesh_arduino_nano_io::*;
 use panic_halt as _;
-
-mod serial_driver;
-use serial_driver::*;
 
 use platform_millis_arduino_nano::{init_timer, ms, Atmega328pMillis, PlatformMillis};
 
@@ -22,7 +20,7 @@ fn main() -> ! {
     let usart =
         arduino_hal::usart::Usart::new(dp.USART0, pins.d0, pins.d1.into_output(), 9600.into());
 
-    let mut interface_driver = ArduinoNanoIO { usart };
+    let mut interface_driver = ArduinoNanoIO::new(usart);
 
     let mut mesh_node = Node::new(NodeConfig {
         device_address: ExactAddressType::new(2).unwrap(),

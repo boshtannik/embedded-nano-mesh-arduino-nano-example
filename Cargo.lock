@@ -11,7 +11,7 @@ dependencies = [
  "avr-device",
  "avr-hal-generic",
  "cfg-if 1.0.0",
- "embedded-hal 0.2.7",
+ "embedded-hal",
  "ufmt 0.1.2",
  "void",
 ]
@@ -55,7 +55,7 @@ source = "git+https://github.com/rahix/avr-hal?rev=190f2c3cb8d29e10f71119352b912
 dependencies = [
  "avr-device",
  "cfg-if 0.1.10",
- "embedded-hal 0.2.7",
+ "embedded-hal",
  "embedded-storage",
  "nb 0.1.3",
  "paste",
@@ -99,26 +99,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "embedded-hal"
-version = "1.0.0"
+name = "embedded-io"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "361a90feb7004eca4019fb28352a9465666b24f840f5c3cddf0ff13920590b89"
-
-[[package]]
-name = "embedded-hal-nb"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fba4268c14288c828995299e59b12babdbe170f6c6d73731af1b4648142e8605"
-dependencies = [
- "embedded-hal 1.0.0",
- "nb 1.1.0",
-]
+checksum = "edd0f118536f44f5ccd48bcb8b111bdc3de888b58c74639dfb034a357d0f206d"
 
 [[package]]
 name = "embedded-nano-mesh"
-version = "2.0.0"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3f7bc702cfd871ecb3d57acac03ea759903b42869a6d0541d528b70c8aa2d5b9"
 dependencies = [
- "embedded-hal-nb",
+ "embedded-io",
  "heapless",
 ]
 
@@ -127,13 +119,23 @@ name = "embedded-nano-mesh-arduino-nano-example"
 version = "2.0.0"
 dependencies = [
  "arduino-hal",
- "embedded-hal 0.2.7",
- "embedded-hal-nb",
  "embedded-nano-mesh",
+ "embedded-nano-mesh-arduino-nano-io",
  "panic-halt",
  "platform-millis-arduino-nano",
  "ufmt 0.2.0",
  "void",
+]
+
+[[package]]
+name = "embedded-nano-mesh-arduino-nano-io"
+version = "0.1.0"
+source = "git+https://github.com/boshtannik/embedded-nano-mesh-arduino-nano-io.git?rev=028d35291d688bb3b8b166a96a71402e2434f6de#028d35291d688bb3b8b166a96a71402e2434f6de"
+dependencies = [
+ "arduino-hal",
+ "embedded-hal",
+ "embedded-io",
+ "ufmt 0.2.0",
 ]
 
 [[package]]
